@@ -1,6 +1,8 @@
-import { BrowserWindow, app, protocol, net, Menu } from "electron";
+import { BrowserWindow, app, protocol, net, Menu, ipcMain } from "electron";
+import { WorkspaceHistoryController } from "./modules/controllers/workspace-history.controller";
+import { makeControllerRegistrar } from "./modules/controllers";
 import { format, pathToFileURL } from "url";
-import { registerControllers } from "./modules/controllers";
+import { WorkspaceController } from "./modules/controllers/workspace.controller";
 import { join } from "path";
 
 function createWindow(): BrowserWindow {
@@ -11,6 +13,13 @@ function createWindow(): BrowserWindow {
     frame: false,
     webPreferences: { nodeIntegration: true, contextIsolation: false },
   });
+}
+
+function registerControllers() {
+  makeControllerRegistrar(ipcMain)([
+    WorkspaceHistoryController,
+    WorkspaceController,
+  ]);
 }
 
 function bootstrap(window: BrowserWindow): void {

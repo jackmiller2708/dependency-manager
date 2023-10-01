@@ -1,7 +1,8 @@
 import { WorkspaceHistoryEndpoint } from "../../shared/models/app-endpoint.model";
+import { IAppController } from "../../shared/interfaces/app-controller.interface";
 import { IpcMain } from "electron";
 
-export class WorkspaceHistoryController {
+export class WorkspaceHistoryController implements IAppController {
   constructor(private readonly _IPC: IpcMain) {}
 
   register(): void {
