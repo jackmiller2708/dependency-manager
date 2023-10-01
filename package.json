@@ -1,0 +1,15 @@
+{
+  "name": "deps-manager",
+  "version": "1.0.0",
+  "description": "dependency manager repo",
+  "main": "index.js",
+  "workspaces": [
+    "electron",
+    "angular"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jack Miller",
+  "license": "MIT"
+}
