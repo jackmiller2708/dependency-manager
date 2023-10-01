@@ -1,5 +1,6 @@
 import { BrowserWindow, app, protocol, net, Menu } from "electron";
 import { format, pathToFileURL } from "url";
+import { registerControllers } from "./modules/controllers";
 import { join } from "path";
 
 function createWindow(): BrowserWindow {
@@ -17,6 +18,7 @@ function bootstrap(window: BrowserWindow): void {
     ? format({ pathname: "index.html", protocol: "file", slashes: true })
     : "http://localhost:4200";
 
+  registerControllers();
   Menu.setApplicationMenu(null);
   window.loadURL(servePath);
 
