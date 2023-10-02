@@ -21,8 +21,10 @@ export class WorkspaceHistoryService {
   updateAndPersistData(updaterFn: (value: WorkspaceHistory) => Either<WorkspaceHistory, WorkspaceHistory>): Either<WorkspaceHistory, WorkspaceHistory> {
     return this._core
       .loadData()
-      .map((output) =>
-        output.chain(updaterFn).chain((data) => this._core.saveData(data).run())
+      .map((output: Either<WorkspaceHistory, WorkspaceHistory>): Either<WorkspaceHistory, WorkspaceHistory> =>
+        output
+          .chain(updaterFn)
+          .chain((data: WorkspaceHistory): Either<WorkspaceHistory, WorkspaceHistory> =>this._core.saveData(data).run())
       )
       .run();
   }
