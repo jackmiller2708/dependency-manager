@@ -1,16 +1,24 @@
 import { IpcMain, IpcMainInvokeEvent } from "electron";
 import { WorkspaceHistoryEndpoint } from "@models/app-endpoint.model";
+import { WorkspaceHistoryService } from "./workspace-history.service";
+import { WorkspaceHistory } from "@models/workspace-history.model";
 import { IAppController } from "@interfaces/app-controller.interface";
 
 export class WorkspaceHistoryController implements IAppController {
-  constructor(private readonly _IPC: IpcMain) {}
+  private readonly _service: WorkspaceHistoryService;
+
+  constructor(private readonly _IPC: IpcMain) {
+    this._service = new WorkspaceHistoryService();
+  }
 
   register(): void {
     this._registerHandler(WorkspaceHistoryEndpoint.LOAD, this._loadHistory);
   }
 
   private _loadHistory(): string {
-    return "history loaded";
+    const unwrap = (history: WorkspaceHistory): WorkspaceHistory => history;
+
+    return JSON.stringify(this._service.getData().fold(unwrap, unwrap));
   }
 
   private _registerHandler<P, T>(endpoint: string, handler: (event: IpcMainInvokeEvent, args?: P) => T): void {

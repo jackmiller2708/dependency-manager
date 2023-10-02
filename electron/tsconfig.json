@@ -14,7 +14,8 @@
     "resolveJsonModule": true,
     "paths": {
       "@models/*": ["src/shared/models/*"],
-      "@interfaces/*": ["src/shared/interfaces/*"]
+      "@interfaces/*": ["src/shared/interfaces/*"],
+      "@controllers/*": ["src/modules/controllers/*"]
     }
   },
   "include": ["src"]

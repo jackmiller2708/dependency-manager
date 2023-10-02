@@ -9,7 +9,8 @@ export default defineConfig({
     mainFields: ["module", "jsnext:main", "jsnext"],
     alias: {
       "@models": resolve(__dirname, "./src/shared/models/"),
-      "@interfaces": resolve(__dirname, "src/shared/interfaces/"),
+      "@interfaces": resolve(__dirname, "./src/shared/interfaces/"),
+      "@controllers": resolve(__dirname, "src/modules/controllers/")
     },
   },
 });
