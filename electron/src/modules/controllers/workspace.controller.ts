@@ -1,4 +1,4 @@
-import { IAppController } from "../../shared/interfaces/app-controller.interface";
+import { IAppController } from "@interfaces/app-controller.interface";
 import { IpcMain } from "electron";
 
 export class WorkspaceController implements IAppController {
