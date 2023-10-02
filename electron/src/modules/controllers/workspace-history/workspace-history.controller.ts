@@ -21,7 +21,10 @@ export class WorkspaceHistoryController implements IAppController {
     return JSON.stringify(this._service.getData().fold(unwrap, unwrap));
   }
 
-  private _registerHandler<P, T>(endpoint: string, handler: (event: IpcMainInvokeEvent, args?: P) => T): void {
-    this._IPC.handle(endpoint, handler.bind(this));
+  private _registerHandler<P = void, T = unknown>(endpoint: string, handler: (args: P) => T): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const _internalHandler = (_: IpcMainInvokeEvent, ..._args: any[]) => handler.apply(this, _args[0]);
+
+    this._IPC.handle(endpoint, _internalHandler);
   }
 }
