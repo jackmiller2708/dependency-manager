@@ -5,7 +5,7 @@ import { IpcMain } from "electron";
 export function makeControllerRegistrar(ipcMain: IpcMain): ControllerRegistrar {
   return (controllers: Newable<IAppController>[]): void => {
     for (const controller of controllers) {
-      new controller(ipcMain).register();
+      new controller(ipcMain as never).register();
     }
   };
 }
