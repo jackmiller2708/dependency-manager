@@ -7,3 +7,8 @@ export type Newable<T> = {
 export type ControllerRegistrar = (
   controllers: Newable<IAppController>[]
 ) => void;
+
+export type HandlerRegistrar = <P = void, T = unknown>(
+  endpoint: string,
+  handler: (args: P) => T
+) => void;
