@@ -24,7 +24,7 @@ export class WorkspaceHistoryService {
       .map((output: Either<WorkspaceHistory, WorkspaceHistory>): Either<WorkspaceHistory, WorkspaceHistory> =>
         output
           .chain(updaterFn)
-          .chain((data: WorkspaceHistory): Either<WorkspaceHistory, WorkspaceHistory> =>this._core.saveData(data).run())
+          .chain((data: WorkspaceHistory): Either<WorkspaceHistory, WorkspaceHistory> => this._core.saveData(data).run())
       )
       .run();
   }
