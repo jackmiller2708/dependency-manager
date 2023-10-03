@@ -17,6 +17,7 @@
       "@models/*": ["src/shared/models/*"],
       "@interfaces/*": ["src/shared/interfaces/*"],
       "@decorators/*": ["src/shared/decorators/*"],
+      "@utils/*": ["src/shared/utils/*"],
       "@controllers/*": ["src/controllers/*"]
     }
   },

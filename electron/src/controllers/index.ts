@@ -1,5 +1,5 @@
 import { IpcMain, IpcMainInvokeEvent } from "electron";
-import { HandlerRegistrar, Newable } from "../../shared/types/utils.type";
+import { HandlerRegistrar, Newable } from "@utils/utils.type";
 import { getRegisteredControllers } from "@decorators/controller.decorator";
 import { HANDLER_METADATA_KEY } from "@decorators/handler.decorator";
 import { IAppController } from "@interfaces/app-controller.interface";
