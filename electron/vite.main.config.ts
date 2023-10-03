@@ -1,6 +1,8 @@
 import { defineConfig } from "vite";
 import { resolve } from "path";
 
+const resolveRelativePath = (relativePath: string): string => resolve(__dirname, relativePath);
+
 // https://vitejs.dev/config
 export default defineConfig({
   resolve: {
@@ -8,9 +10,10 @@ export default defineConfig({
     browserField: false,
     mainFields: ["module", "jsnext:main", "jsnext"],
     alias: {
-      "@models": resolve(__dirname, "./src/shared/models/"),
-      "@interfaces": resolve(__dirname, "./src/shared/interfaces/"),
-      "@controllers": resolve(__dirname, "src/modules/controllers/")
+      "@models": resolveRelativePath("./src/shared/models/"),
+      "@interfaces": resolveRelativePath("./src/shared/interfaces/"),
+      "@decorators": resolveRelativePath("./src/shared/decorators/"),
+      "@controllers": resolveRelativePath("./src/modules/controllers/"),
     },
   },
 });

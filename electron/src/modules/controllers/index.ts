@@ -1,16 +1,45 @@
-import { ControllerRegistrar, HandlerRegistrar, Newable } from "../../shared/types/utils.type";
+import { HandlerRegistrar, Newable } from "../../shared/types/utils.type";
 import { IpcMain, IpcMainInvokeEvent } from "electron";
+import { REGISTERED_CONTROLLERS } from "@decorators/controller.decorator";
+import { HANDLER_METADATA_KEY } from "@decorators/handler.decorator";
 import { IAppController } from "@interfaces/app-controller.interface";
+import { Map } from "immutable";
 
-export function makeControllerRegistrar(ipcMain: IpcMain): ControllerRegistrar {
-  return (controllers: Newable<IAppController>[]): void => {
-    for (const controller of controllers) {
-      new controller(ipcMain as never).register();
+import "reflect-metadata";
+import "./workspace-history/workspace-history.controller";
+import "./workspace/workspace.controller";
+
+export function initControllers(ipcMain: IpcMain) {
+  const controllers = Map<string, Newable<IAppController>>(REGISTERED_CONTROLLERS as unknown as Record<string, never>);
+
+  for (const [name, controller] of controllers) {
+    const _controllerInstance = new controller();
+    const _registerHandler = makeHandlerRegistrar(_controllerInstance, ipcMain);
+
+    for (const [handlerName, channel] of getRegisteredHandlers(controller)) {
+      _registerHandler(
+        `${name}-${channel}`,
+        _controllerInstance[handlerName as keyof IAppController]
+      );
     }
-  };
+  }
 }
 
-export function makeHandlerRegistrar(thisArg: IAppController ,ipcMain: IpcMain): HandlerRegistrar {
+function getRegisteredHandlers(controller: Newable<unknown>): Map<string, string> {
+  let handlers =  Map<string, string>();
+
+  for (const propName of Object.getOwnPropertyNames(controller.prototype)) {
+    if (!Reflect.hasMetadata(HANDLER_METADATA_KEY, controller.prototype, propName)) {
+      continue;
+    }
+
+    handlers = handlers.set(propName, Reflect.getMetadata(HANDLER_METADATA_KEY, controller.prototype, propName));
+  }
+
+  return handlers;
+}
+
+function makeHandlerRegistrar(thisArg: IAppController ,ipcMain: IpcMain): HandlerRegistrar {
   return <P = void, T = unknown>(endpoint: string, handler: (args: P) => T ): void => {
     const _internalHandler = (_: IpcMainInvokeEvent, ..._args: unknown[]): T => handler.apply(thisArg, _args[0] as [args: P]);
 

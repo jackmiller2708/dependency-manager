@@ -1,8 +1,6 @@
 import { BrowserWindow, app, protocol, net, Menu, ipcMain } from "electron";
-import { WorkspaceHistoryController } from "@controllers/workspace-history/workspace-history.controller";
-import { makeControllerRegistrar } from "@controllers/index";
 import { format, pathToFileURL } from "url";
-import { WorkspaceController } from "@controllers/workspace/workspace.controller";
+import { initControllers } from "@controllers/index";
 import { join } from "path";
 
 function createWindow(): BrowserWindow {
@@ -15,19 +13,12 @@ function createWindow(): BrowserWindow {
   });
 }
 
-function registerControllers() {
-  makeControllerRegistrar(ipcMain)([
-    WorkspaceHistoryController,
-    WorkspaceController,
-  ]);
-}
-
 function bootstrap(window: BrowserWindow): void {
   const servePath = app.isPackaged
     ? format({ pathname: "index.html", protocol: "file", slashes: true })
     : "http://localhost:4200";
 
-  registerControllers();
+  initControllers(ipcMain);
   Menu.setApplicationMenu(null);
   window.loadURL(servePath);
 
