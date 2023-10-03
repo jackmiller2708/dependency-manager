@@ -13,7 +13,7 @@ export default defineConfig({
       "@models": resolveRelativePath("./src/shared/models/"),
       "@interfaces": resolveRelativePath("./src/shared/interfaces/"),
       "@decorators": resolveRelativePath("./src/shared/decorators/"),
-      "@controllers": resolveRelativePath("./src/modules/controllers/"),
+      "@controllers": resolveRelativePath("./src/controllers/"),
     },
   },
 });

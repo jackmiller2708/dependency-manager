@@ -14,12 +14,13 @@ function createWindow(): BrowserWindow {
 }
 
 function bootstrap(window: BrowserWindow): void {
+  initControllers(ipcMain);
+  Menu.setApplicationMenu(null);
+
   const servePath = app.isPackaged
     ? format({ pathname: "index.html", protocol: "file", slashes: true })
     : "http://localhost:4200";
 
-  initControllers(ipcMain);
-  Menu.setApplicationMenu(null);
   window.loadURL(servePath);
 
   if (!app.isPackaged) {

@@ -9,18 +9,22 @@ import "reflect-metadata";
 import "./workspace-history/workspace-history.controller";
 import "./workspace/workspace.controller";
 
-export function initControllers(ipcMain: IpcMain) {
-  for (const [name, controller] of getRegisteredControllers()) {
-    const _controllerInstance = new controller();
-    const _registerHandler = makeHandlerRegistrar(_controllerInstance, ipcMain);
+export function initControllers(ipcMain: IpcMain): Promise<void> {
+  return new Promise<void>((resolve) => {
+    for (const [name, controller] of getRegisteredControllers()) {
+      const _controllerInstance = new controller();
+      const _registerHandler = makeHandlerRegistrar(_controllerInstance, ipcMain);
 
-    for (const [handlerName, channel] of getRegisteredHandlers(controller)) {
-      _registerHandler(
-        `${name}-${channel}`,
-        _controllerInstance[handlerName as keyof IAppController]
-      );
+      for (const [handlerName, channel] of getRegisteredHandlers(controller)) {
+        _registerHandler(
+          `${name}-${channel}`,
+          _controllerInstance[handlerName as keyof IAppController]
+        );
+      }
     }
-  }
+
+    resolve();
+  });
 }
 
 function getRegisteredHandlers(controller: Newable<unknown>): Map<string, string> {
