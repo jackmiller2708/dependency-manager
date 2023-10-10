@@ -1,11 +1,12 @@
 import { WorkspaceHistoryEndpoint } from "@models/app-endpoint.model";
 import { WorkspaceHistoryService } from "./workspace-history.service";
 import { WorkspaceHistory } from "@models/workspace-history.model";
+import { IAppController } from "@interfaces/app-controller.interface";
 import { Controller } from "@decorators/controller.decorator";
 import { Handler } from "@decorators/handler.decorator";
 
 @Controller('workspace-history')
-export class WorkspaceHistoryController {
+export class WorkspaceHistoryController implements IAppController {
   private readonly _service: WorkspaceHistoryService;
 
   constructor() {

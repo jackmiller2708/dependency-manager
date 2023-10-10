@@ -16,6 +16,7 @@
     "paths": {
       "@models/*": ["src/shared/models/*"],
       "@interfaces/*": ["src/shared/interfaces/*"],
+      "@services/*": ["src/shared/services/*"],
       "@decorators/*": ["src/shared/decorators/*"],
       "@utils/*": ["src/shared/utils/*"],
       "@controllers/*": ["src/controllers/*"]

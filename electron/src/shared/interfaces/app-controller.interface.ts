@@ -1,3 +1,1 @@
-export interface IAppController {
-  register(): void;
-}
+export interface IAppController {}

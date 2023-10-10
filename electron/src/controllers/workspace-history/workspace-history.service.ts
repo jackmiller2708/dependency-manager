@@ -1,4 +1,4 @@
-import { FileSystemService } from "../../../shared/services/file-system/file-system.service";
+import { FileSystemService } from "@services/file-system/file-system.service";
 import { IWorkspaceHistory } from "@interfaces/workspace-history.interface";
 import { WorkspaceHistory } from "@models/workspace-history.model";
 import { Workspace } from "@models/workspace.model";

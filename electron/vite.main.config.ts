@@ -12,6 +12,7 @@ export default defineConfig({
     alias: {
       "@models": resolveRelativePath("./src/shared/models/"),
       "@interfaces": resolveRelativePath("./src/shared/interfaces/"),
+      "@services": resolveRelativePath("./src/shared/services/"),
       "@decorators": resolveRelativePath("./src/shared/decorators/"),
       "@utils": resolveRelativePath("./src/shared/utils/"),
       "@controllers": resolveRelativePath("./src/controllers/"),
