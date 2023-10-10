@@ -7,4 +7,8 @@ const defaultValues: IWorkspace = {
   timestamp: Date.now(),
 };
 
-export class Workspace extends Record<IWorkspace>(defaultValues) {}
+export class Workspace extends Record<IWorkspace>(defaultValues) {
+  static adaptor(payload: string): Workspace {
+    return new Workspace(JSON.parse(payload));
+  }
+}
