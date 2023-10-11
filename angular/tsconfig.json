@@ -22,7 +22,8 @@
     "lib": ["ES2022", "dom"],
     "paths": {
       "@models/*": ["src/shared/models/*"],
-      "@interfaces/*": ["src/shared/interfaces/*"]
+      "@interfaces/*": ["src/shared/interfaces/*"],
+      "@components/*": ["src/shared/components/*"]
     }
   },
   "angularCompilerOptions": {

@@ -32,11 +32,8 @@ export class WorkspaceHistoryController implements IAppController {
   async setLastOpened(workspace?: Workspace) {
    const input = workspace
      ? this._service.updateAndPersistData((history: WorkspaceHistory): Either<WorkspaceHistory, WorkspaceHistory> => {
-           return Either.right<WorkspaceHistory, WorkspaceHistory>(
-             history.setLastOpened(workspace)
-           );
-         }
-       )
+          return Either.right<WorkspaceHistory, WorkspaceHistory>(history.setLastOpened(workspace));
+        })
      : await this._openWorkspaceSelectDialog();
 
     return input?.fold(
