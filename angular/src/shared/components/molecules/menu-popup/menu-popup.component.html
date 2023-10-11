@@ -1,0 +1,20 @@
+<ng-container *ngIf="target && dataSource">
+  <app-popup [target]="target" [isShown]="isShown" [positions]="dropdownPositions" (outsideClick)="isShownChange.emit(false)">
+    <ul class="bg-white shadow-md shadow-black rounded-md overflow-hidden select-none">
+      <li *ngFor="let item of dataSource">
+        <div 
+          *ngIf="!item.separator; else separator" 
+          class="m-1 py-1 px-4 cursor-pointer hover:bg-slate-400 transition-colors ease-out rounded-sm" 
+          [ngClass]="item.classNames" 
+          (click)="onItemClick(item.onClick)"
+        >
+          <app-icon *ngIf="item.iconPath" [path]="item.iconPath"></app-icon>
+          <app-text [content]="item.content" type="paragraph"></app-text>
+        </div>
+        <ng-template #separator>
+          <div class="border-b w-full"></div>
+        </ng-template>
+      </li>
+    </ul>
+  </app-popup>
+</ng-container>
