@@ -6,3 +6,7 @@ export enum WorkspaceHistoryEndpoint {
   UPDATE_FROM_HISTORY = "update-from-history",
   REMOVE_FROM_HISTORY = "remove-from-history",
 }
+
+export enum WorkspaceEndpoint {
+  LOAD = "load",
+}

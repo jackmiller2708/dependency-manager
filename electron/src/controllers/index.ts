@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-types */
 
 import { IpcMain, IpcMainInvokeEvent } from "electron";
 import { HandlerRegistrar, Newable } from "@utils/utils.type";
@@ -19,12 +20,12 @@ export function initControllers(ipcMain: IpcMain): Promise<void> {
       const _registerHandler = makeHandlerRegistrar(_controllerInstance, ipcMain);
 
       for (const [handlerName, handlerConfig] of getRegisteredHandlers(controller)) {
-        _registerHandler(
-          `${name}-${handlerConfig.channel}`,
-          handlerConfig.options?.adaptor
-            ? registerAdaptor(handlerConfig.options.adaptor, _controllerInstance[handlerName as keyof IAppController])
-            : _controllerInstance[handlerName as keyof IAppController]
-        );
+        const originalHandler = (_controllerInstance[handlerName as keyof IAppController] as Function).bind(_controllerInstance);
+        const handler = handlerConfig.options?.adaptor
+          ? registerAdaptor(handlerConfig.options.adaptor, originalHandler)
+          : originalHandler;
+
+        _registerHandler(`${name}-${handlerConfig.channel}`, handler);
       }
     }
 
@@ -50,13 +51,21 @@ function getRegisteredHandlers(controller: Newable<unknown>): Map<string, AppHan
 }
 
 function registerAdaptor<P = void, T = unknown>(adaptor: (payload: string) => T | void, handler: (args: P) => T) {
-  return (args: string): T => handler(adaptor(args) as any);
+  return (args: string): string | undefined => {
+    const res = handler(adaptor(args) as any);
+
+    return res ? JSON.stringify(res) : (res as undefined);
+  };
 }
 
 function makeHandlerRegistrar(thisArg: IAppController, ipcMain: IpcMain): HandlerRegistrar {
   return <P = void, T = unknown>(endpoint: string, handler: (args: P) => T): void => {
     ipcMain.handle(
       endpoint, 
-      (_: IpcMainInvokeEvent, ..._args: unknown[]): T => handler.apply(thisArg, _args[0] as [args: P]));
+      (_: IpcMainInvokeEvent, ..._args: unknown[]): string | undefined => {
+        const res = handler.apply(thisArg, _args[0] as [args: P]);
+
+        return res ? JSON.stringify(res) : (res as undefined);
+      });
   };
 }
