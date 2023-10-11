@@ -23,7 +23,8 @@
     "paths": {
       "@models/*": ["src/shared/models/*"],
       "@interfaces/*": ["src/shared/interfaces/*"],
-      "@components/*": ["src/shared/components/*"]
+      "@components/*": ["src/shared/components/*"],
+      "@shared/*": ["src/shared/*"]
     }
   },
   "angularCompilerOptions": {
