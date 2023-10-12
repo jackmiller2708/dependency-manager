@@ -1,8 +1,8 @@
 import { BrowserWindow, app, protocol, net, Menu, ipcMain } from "electron";
 import { format, pathToFileURL } from "url";
 import { initControllers } from "@controllers/index";
-import { join } from "path";
 import { AppService } from "@services/app/app.service";
+import { join } from "path";
 
 function createWindow(): BrowserWindow {
   return new BrowserWindow({
@@ -18,6 +18,7 @@ function bootstrap(window: BrowserWindow): void {
   initControllers(ipcMain);
   Menu.setApplicationMenu(null);
   AppService.window = window;
+  AppService.app = app;
 
   const servePath = app.isPackaged
     ? format({ pathname: "index.html", protocol: "file", slashes: true })

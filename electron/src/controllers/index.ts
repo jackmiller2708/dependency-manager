@@ -12,6 +12,7 @@ import { Map } from "immutable";
 import "reflect-metadata";
 import "./workspace-history/workspace-history.controller";
 import "./workspace/workspace.controller";
+import "./window/window.controller";
 
 export function initControllers(ipcMain: IpcMain): Promise<void> {
   return new Promise<void>((resolve) => {

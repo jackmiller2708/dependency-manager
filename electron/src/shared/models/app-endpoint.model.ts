@@ -10,3 +10,10 @@ export enum WorkspaceHistoryEndpoint {
 export enum WorkspaceEndpoint {
   LOAD = "load",
 }
+
+export enum WindowEndpoint {
+  MAXIMIZE = "maximize",
+  MINIMIZE = "minimize",
+  CLOSE = "close",
+  RESTORE = "restore",
+}

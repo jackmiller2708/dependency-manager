@@ -2,4 +2,5 @@
   [blurred]="!isWindowActive" 
   [isMaximized]="isWindowMaximize"
   [isVisible]="!isFullscreen"
+  (windowCommandExecute)="onWindowCommandExecute($event)"
 ></app-titlebar>

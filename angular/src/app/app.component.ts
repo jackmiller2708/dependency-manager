@@ -1,4 +1,6 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostBinding, OnInit } from '@angular/core';
+import { InterProcessCommunicator } from '@shared/services/IPC/inter-process-communicator.service';
+import { WindowEndpoint } from '@models/app-endpoints';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -36,7 +38,10 @@ export class AppComponent implements OnInit {
     return this._isWindowMaximize;
   }
 
-  constructor() {
+  constructor(
+    private readonly _IPC: InterProcessCommunicator,
+    private readonly _CDR: ChangeDetectorRef
+  ) {
     this._isWindowMaximize = this._isWindowMaximized;
     this._isFullscreen = false;
     this._isWindowActive = document.hasFocus();
@@ -44,4 +49,11 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  onWindowCommandExecute(command: WindowEndpoint): void {
+    this._isWindowMaximize = command === WindowEndpoint.MAXIMIZE;
+
+    this._IPC.invoke(command);
+    this._CDR.detectChanges();
+  }
 }

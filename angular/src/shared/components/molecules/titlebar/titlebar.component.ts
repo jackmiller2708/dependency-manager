@@ -1,13 +1,14 @@
 import { WorkspaceEvent, WorkspaceEventMessages, EditorEvent, EditorEventMessages } from '@models/app-events';
-import { Component, HostBinding, Input, ChangeDetectorRef } from '@angular/core';
-import { InterProcessCommunicator } from '@shared/services/IPC/inter-process-communicator.service';
+import { Component, HostBinding, Input, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
 import { MenuPopupComponent } from '../menu-popup/menu-popup.component';
 import { ConnectedPosition } from '@angular/cdk/overlay';
 import { EventBusService } from '@shared/services/event-bus/event-bus.service';
+import { WindowEndpoint } from '@models/app-endpoints';
 import { PopupMenuItem } from '../menu-popup/models/popup-menu-item.model';
 import { IconComponent } from '@components/atoms/icon/icon.component';
 import { TitleService } from '@shared/services/title/title.service';
 import { CommonModule } from '@angular/common';
+import { AppEvent } from '@interfaces/IEvent.interface';
 import { Subject } from 'rxjs';
 import { Helper } from '@shared/helper.class';
 import { List } from 'immutable';
@@ -90,8 +91,10 @@ export class TitlebarComponent {
     return this._menuDropdownPositions;
   }
 
+  @Output()
+  readonly windowCommandExecute: EventEmitter<WindowEndpoint>;
+
   constructor(
-    private readonly _IPC: InterProcessCommunicator,
     private readonly _titleService: TitleService,
     private readonly _CDR: ChangeDetectorRef,
     private readonly _eventBusService: EventBusService
@@ -103,6 +106,8 @@ export class TitlebarComponent {
     this._menuDropdownPositions = List([
       { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 5 },
     ]);
+
+    this.windowCommandExecute = new EventEmitter();
   }
 
   ngOnInit(): void {
@@ -114,19 +119,19 @@ export class TitlebarComponent {
   }
 
   onMaximizeControlClick(): void {
-    // this._IPC.send('window-control', JSON.stringify({ command: 'maximize' }));
+    this.windowCommandExecute.emit(WindowEndpoint.MAXIMIZE);
   }
 
   onMinimizeControlClick(): void {
-    // this._IPC.send('window-control', JSON.stringify({ command: 'minimize' }));
+    this.windowCommandExecute.emit(WindowEndpoint.MINIMIZE);
   }
 
   onCloseControlClick(): void {
-    // this._IPC.send('window-control', JSON.stringify({ command: 'close' }));
+    this.windowCommandExecute.emit(WindowEndpoint.CLOSE);
   }
 
   onRestoreControlClick(): void {
-    // this._IPC.send('window-control', JSON.stringify({ command: 'restore' }));
+    this.windowCommandExecute.emit(WindowEndpoint.RESTORE);
   }
 
   onMenuTriggerClick(): void {
@@ -150,11 +155,29 @@ export class TitlebarComponent {
     this._CDR.detectChanges();
   }
 
+  private _onAppEvents(event: AppEvent): void {
+    if (event instanceof WorkspaceEvent && (event.message === WorkspaceEventMessages.OPEN || event.message === WorkspaceEventMessages.CLOSE)) {
+      this._menuItems = this._menuItems.setIn(
+        [1, 'disabled'],
+        event.message ===  WorkspaceEventMessages.CLOSE
+      );
+    }
+
+    if (event instanceof EditorEvent && (event.message === EditorEventMessages.EXIT || event.message === EditorEventMessages.OPEN)) {
+      this._menuItems = this._menuItems.setIn(
+        [0, 'disabled'],
+        event.message === EditorEventMessages.EXIT
+      );
+    }
+
+    this._CDR.detectChanges();
+  }
+
   private _initStores(): void {
     const _register = Helper.makeObservableRegistrar.call(this, this._ngDestroy);
 
-
     _register(this._titleService.titleStore$, this._onTitleChanges);
+    _register(this._eventBusService.appEvents$, this._onAppEvents);
   }
 
   private _initMenuItems(): List<PopupMenuItem> {
