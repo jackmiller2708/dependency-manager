@@ -1,5 +1,5 @@
 import { WorkspaceEvent, WorkspaceEventMessages, EditorEvent, EditorEventMessages } from '@models/app-events';
-import { Component, HostBinding, Input, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
+import { Component, HostBinding, Input, ChangeDetectorRef, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { MenuPopupComponent } from '../menu-popup/menu-popup.component';
 import { ConnectedPosition } from '@angular/cdk/overlay';
 import { EventBusService } from '@shared/services/event-bus/event-bus.service';
@@ -18,7 +18,8 @@ import { List } from 'immutable';
   standalone: true,
   imports: [CommonModule, IconComponent, MenuPopupComponent],
   templateUrl: './titlebar.component.html',
-  styleUrls: ['./titlebar.component.scss']
+  styleUrls: ['./titlebar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TitlebarComponent {
   private readonly _ngDestroy: Subject<void>;

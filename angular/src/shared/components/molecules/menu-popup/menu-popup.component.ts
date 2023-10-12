@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 import { ConnectedPosition } from '@angular/cdk/overlay';
 import { PopupComponent } from './../../atoms/popup/popup.component';
 import { TextComponent } from '@components/atoms/text/text.component';
@@ -13,6 +13,7 @@ import { List } from 'immutable';
   imports: [CommonModule, PopupComponent, IconComponent, TextComponent],
   templateUrl: './menu-popup.component.html',
   styleUrls: ['./menu-popup.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuPopupComponent {
   private _dropdownPosition: List<ConnectedPosition>;

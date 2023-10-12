@@ -1,0 +1,11 @@
+<ng-container *ngIf="dataSource">
+  <div 
+    *ngFor="let item of dataSource" 
+    [routerLink]="item.routerLink" 
+    [routerLinkActive]="activeItemClassNames.concat(item.activeClassNames ? item.activeClassNames : [])"
+    [ngClass]="itemClassNames.concat(item.classNames ? item.classNames : [])"
+    class="cursor-pointer"
+  >
+    {{ item.title }}
+  </div>
+</ng-container>

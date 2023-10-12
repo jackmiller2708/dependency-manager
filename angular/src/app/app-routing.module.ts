@@ -5,22 +5,20 @@ const routes: Routes = [
   {
     path: 'startup',
     loadChildren: () =>
-      import('./startup/startup-routing.module').then(
-        (m) => m.StartupRoutingModule
-      ),
+      import('./startup/startup.module').then((m) => m.StartupModule),
   },
   {
     path: 'workspace',
     loadChildren: () =>
-      import('./workspace/workspace-routing.module').then(
-        (m) => m.WorkspaceRoutingModule
-      ),
+      import('./workspace/workspace.module').then((m) => m.WorkspaceModule),
   },
   { path: '**', redirectTo: 'startup' },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
+  imports: [
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
+  ],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

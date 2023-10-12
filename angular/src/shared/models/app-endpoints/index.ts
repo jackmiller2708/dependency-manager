@@ -1,1 +1,2 @@
-export * from './window.endpoint';
+export * from './Window.endpoint';
+export * from './Workspace.endpoint';

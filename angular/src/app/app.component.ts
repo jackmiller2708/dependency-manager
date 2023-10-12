@@ -1,12 +1,14 @@
-import { ChangeDetectorRef, Component, HostBinding, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnInit } from '@angular/core';
+import { Subject, debounceTime, fromEvent, map, merge } from 'rxjs';
 import { InterProcessCommunicator } from '@shared/services/IPC/inter-process-communicator.service';
 import { WindowEndpoint } from '@models/app-endpoints';
-import { Subject } from 'rxjs';
+import { Helper } from '@shared/helper.class';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
   private readonly _ngDestroy$: Subject<void>;
@@ -48,12 +50,35 @@ export class AppComponent implements OnInit {
     this._ngDestroy$ = new Subject();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this._initStores();
+  }
 
   onWindowCommandExecute(command: WindowEndpoint): void {
-    this._isWindowMaximize = command === WindowEndpoint.MAXIMIZE;
-
     this._IPC.invoke(command);
     this._CDR.detectChanges();
+  }
+
+  private _onWindowResize(): void {
+    this._isWindowMaximize = this._isWindowMaximized;
+    this._CDR.detectChanges();
+  }
+
+  private _onWindowVisibilityChange(isFocus: boolean): void {
+    this._isWindowActive = isFocus;
+    this._CDR.detectChanges();
+  }
+
+  private _initStores() {
+    const _register = Helper.makeObservableRegistrar.call(this, this._ngDestroy$);
+
+    const windowResize$ = fromEvent(window, 'resize').pipe(debounceTime(100));
+    const windowVisibilityChange$ = merge(
+      fromEvent(window, 'focus').pipe(map(() => true)),
+      fromEvent(window, 'blur').pipe(map(() => false))
+    );
+
+    _register(windowVisibilityChange$, this._onWindowVisibilityChange);
+    _register(windowResize$, this._onWindowResize);
   }
 }

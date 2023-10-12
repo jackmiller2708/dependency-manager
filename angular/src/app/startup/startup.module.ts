@@ -1,5 +1,5 @@
-import { WorkspaceHistoryLocalComponent } from './components/workspace-history-local/workspace-history-local.component';
-import { WorkspaceHistoryGitComponent } from './components/workspace-history-git/workspace-history-git.component';
+import { WorkspaceHistoryLocalComponent, WorkspaceHistoryGitComponent } from './components';
+import { NavigationVerticalComponent } from '@components/molecules/navigation-vertical/navigation-vertical.component';
 import { StartupRoutingModule } from './startup-routing.module';
 import { StartupComponent } from './startup.component';
 import { CommonModule } from '@angular/common';
@@ -11,6 +11,6 @@ import { NgModule } from '@angular/core';
     WorkspaceHistoryLocalComponent,
     WorkspaceHistoryGitComponent,
   ],
-  imports: [CommonModule, StartupRoutingModule],
-})
+  imports: [CommonModule, NavigationVerticalComponent, StartupRoutingModule],
+}) 
 export class StartupModule {}
