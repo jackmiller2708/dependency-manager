@@ -52,10 +52,10 @@ function getRegisteredHandlers(controller: Newable<unknown>): Map<string, AppHan
 }
 
 function registerAdaptor<P = void, T = unknown>(adaptor: (payload: string) => T | void, handler: (args: P) => T) {
-  return (args: string): string | undefined => {
-    const res = handler(adaptor(args) as any);
+  return async (args: string): Promise<string | undefined> => {
+    const res = await Promise.resolve(handler(args ? adaptor(args) as any : args));
 
-    return res ? JSON.stringify(res) : (res as undefined);
+    return res && typeof res !== "string" ? JSON.stringify(res) : (res as undefined);
   };
 }
 
@@ -63,10 +63,10 @@ function makeHandlerRegistrar(thisArg: IAppController, ipcMain: IpcMain): Handle
   return <P = void, T = unknown>(endpoint: string, handler: (args: P) => T): void => {
     ipcMain.handle(
       endpoint, 
-      (_: IpcMainInvokeEvent, ..._args: unknown[]): string | undefined => {
-        const res = handler.apply(thisArg, _args[0] as [args: P]);
+      async (_: IpcMainInvokeEvent, ..._args: unknown[]): Promise<string | undefined> => {
+        const res = await Promise.resolve(handler.apply(thisArg, _args[0] as [args: P]));
 
-        return res ? JSON.stringify(res) : (res as undefined);
+        return res && typeof res !== "string" ? JSON.stringify(res) : (res as undefined);
       });
   };
 }

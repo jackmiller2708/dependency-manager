@@ -22,10 +22,10 @@ export class WorkspaceHistoryController implements IAppController {
   }
 
   @Handler(WorkspaceHistoryEndpoint.LOAD)
-  loadHistory(): string {
+  loadHistory(): WorkspaceHistory {
     const unwrap = (history: WorkspaceHistory): WorkspaceHistory => history;
 
-    return JSON.stringify(this._service.getData().fold(unwrap, unwrap));
+    return this._service.getData().fold(unwrap, unwrap);
   }
 
   @Handler(WorkspaceHistoryEndpoint.SET_LAST_OPENED, workspaceHandlerOptions)

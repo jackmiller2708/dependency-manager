@@ -1,0 +1,7 @@
+<ng-container *ngIf="itemTemplate && dataSource">
+  <ng-template
+    *ngFor="let item of dataSource"
+    [ngTemplateOutlet]="itemTemplate"
+    [ngTemplateOutletContext]="{ item }"
+  ></ng-template>
+</ng-container>

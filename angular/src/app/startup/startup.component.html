@@ -1,5 +1,9 @@
 <app-navigation-vertical
-  [itemClassNames]="['bg-gray-500', 'py-2', 'px-4', 'rounded-md']"
+  [itemClassNames]="['hover:outline', 'hover:outline-1', 'min-w-[175px]', 'rounded-md', 'px-2 ','py-1', 'transition-colors']"
+  [activeItemClassNames]="['bg-gray-200', 'pointer-events-none']"
   [dataSource]="navigationItems"
 ></app-navigation-vertical>
-<router-outlet></router-outlet>
+
+<div class="flex-1">
+  <router-outlet></router-outlet>
+</div>

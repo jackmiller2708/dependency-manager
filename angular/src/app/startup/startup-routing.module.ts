@@ -1,4 +1,4 @@
-import { WorkspaceHistoryLocalComponent } from './components/workspace-history-local/workspace-history-local.component';
+import { WorkspaceHistoryLocalComponent } from './components/workspace-history-local/components/workspace-history-local/workspace-history-local.component';
 import { WorkspaceHistoryGitComponent } from './components/workspace-history-git/workspace-history-git.component';
 import { RouterModule, Routes } from '@angular/router';
 import { StartupComponent } from './startup.component';

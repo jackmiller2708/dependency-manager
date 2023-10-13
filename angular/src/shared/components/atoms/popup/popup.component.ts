@@ -26,7 +26,6 @@ export class PopupComponent {
 
   @Input()
   set target(value: Element | undefined) {
-    console.log(value)
     this._target = value;
   }
 
