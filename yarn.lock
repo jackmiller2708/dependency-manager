@@ -5530,6 +5530,7 @@ __metadata:
     eslint-import-resolver-typescript: ^3.6.1
     eslint-plugin-import: ^2.28.1
     immutable: ^5.0.0-beta.4
+    ramda: ^0.29.1
     reflect-metadata: ^0.1.13
     ts-node: ^10.0.0
     typescript: ~4.5.4
@@ -10971,6 +10972,13 @@ __metadata:
   version: 5.1.1
   resolution: "quick-lru@npm:5.1.1"
   checksum: a516faa25574be7947969883e6068dbe4aa19e8ef8e8e0fd96cddd6d36485e9106d85c0041a27153286b0770b381328f4072aa40d3b18a19f5f7d2b78b94b5ed
+  languageName: node
+  linkType: hard
+
+"ramda@npm:^0.29.1":
+  version: 0.29.1
+  resolution: "ramda@npm:0.29.1"
+  checksum: df7c627597a66d5f317f6ba77ad17d7ba818efc9c2c4a638440bc23f2c651e823970ea05b05a28895738c0e4b738fadbdc17b2c97b3ad922826febc09c859c44
   languageName: node
   linkType: hard
 

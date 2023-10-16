@@ -37,6 +37,7 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
     "immutable": "^5.0.0-beta.4",
+    "ramda": "^0.29.1",
     "reflect-metadata": "^0.1.13"
   }
 }
