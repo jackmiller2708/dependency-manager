@@ -4,7 +4,7 @@ import { MenuPopupComponent } from '../menu-popup/menu-popup.component';
 import { ConnectedPosition } from '@angular/cdk/overlay';
 import { EventBusService } from '@shared/services/event-bus/event-bus.service';
 import { WindowEndpoint } from '@models/app-endpoints';
-import { PopupMenuItem } from '../menu-popup/models/popup-menu-item.model';
+import { PopupMenuItem } from '../menu-popup/models/PopupMenuItem.class';
 import { IconComponent } from '@components/atoms/icon/icon.component';
 import { TitleService } from '@shared/services/title/title.service';
 import { CommonModule } from '@angular/common';

@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, HostBinding } from '@angular/core';
+import { Observable, Subject, filter } from 'rxjs';
 import { WorkspaceHistoryService } from '../../services/workspace-history-local.service';
 import { WorkspaceHistory } from '@models/WorkspaceHistory.class';
+import { PopupMenuItem } from '@components/molecules/menu-popup/models/PopupMenuItem.class';
 import { Workspace } from '@models/Workspace.class';
-import { Observable, Subject, filter } from 'rxjs';
 import { Helper } from '@shared/helper.class';
 import { List } from 'immutable';
 
@@ -19,7 +20,7 @@ export class WorkspaceHistoryLocalComponent implements OnInit, OnDestroy {
 
   @HostBinding('class')
   private get _classes(): string[] {
-    return ['flex', 'flex-col', 'gap-4', 'h-full']
+    return ['flex', 'flex-col', 'gap-4', 'h-full'];
   }
 
   get workspaces(): List<Workspace> {
@@ -35,12 +36,12 @@ export class WorkspaceHistoryLocalComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private readonly _service: WorkspaceHistoryService, 
+    private readonly _service: WorkspaceHistoryService,
     private readonly _CDR: ChangeDetectorRef
   ) {
     this._isReady = false;
     this._ngDestroy = new Subject();
-    this._workspaces = List()
+    this._workspaces = List();
   }
 
   ngOnInit(): void {
@@ -55,7 +56,8 @@ export class WorkspaceHistoryLocalComponent implements OnInit, OnDestroy {
   onOpenWorkspaceBtnClick(): void {
     this._service.openWorkspace();
   }
-  
+
+
   private async _processDataSource(data: WorkspaceHistory): Promise<void> {
     // if (data.lastOpened) {
     //   this._loaderService.setLoading(true);
@@ -79,9 +81,11 @@ export class WorkspaceHistoryLocalComponent implements OnInit, OnDestroy {
     this._CDR.detectChanges();
   }
 
-
   private _initStores() {
-    const _register = Helper.makeObservableRegistrar.call(this, this._ngDestroy);
+    const _register = Helper.makeObservableRegistrar.call(
+      this,
+      this._ngDestroy
+    );
     const workspaceHistory$ = this._service.history$.pipe(
       filter((data) => !!data)
     ) as Observable<WorkspaceHistory>;

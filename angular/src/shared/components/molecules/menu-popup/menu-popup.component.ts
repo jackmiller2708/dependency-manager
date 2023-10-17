@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, O
 import { ConnectedPosition } from '@angular/cdk/overlay';
 import { PopupComponent } from './../../atoms/popup/popup.component';
 import { TextComponent } from '@components/atoms/text/text.component';
-import { PopupMenuItem } from './models/popup-menu-item.model';
+import { PopupMenuItem } from './models/PopupMenuItem.class';
 import { IconComponent } from '@components/atoms/icon/icon.component';
 import { CommonModule } from '@angular/common';
 import { List } from 'immutable';

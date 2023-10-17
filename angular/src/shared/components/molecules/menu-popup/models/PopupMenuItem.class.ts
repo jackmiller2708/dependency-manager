@@ -1,4 +1,4 @@
-import { IPopupMenuItem } from '../interfaces/popup-menu-item.interface';
+import { IPopupMenuItem } from '../interfaces/IPopupMenuItem.interface';
 import { Record } from 'immutable';
 
 const defaultValues: IPopupMenuItem = {

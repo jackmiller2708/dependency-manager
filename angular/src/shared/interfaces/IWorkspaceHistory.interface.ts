@@ -1,7 +1,7 @@
-import { List, RecordOf } from 'immutable';
-import { IWorkspace } from './IWorkspace.interface';
+import { Workspace } from '@models/Workspace.class';
+import { List } from 'immutable';
 
 export interface IWorkspaceHistory {
-  workspaces: List<RecordOf<IWorkspace>>;
-  lastOpened: RecordOf<IWorkspace> | undefined;
+  workspaces: List<Workspace>;
+  lastOpened: Workspace | undefined;
 }
