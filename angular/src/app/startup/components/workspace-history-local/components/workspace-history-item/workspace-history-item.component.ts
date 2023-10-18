@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, ViewChild,   ElementRef, Output } from '@angular/core';
 import { IMutableComponent } from '@interfaces/IMutableComponent.interface';
 import { ProcessService } from '@shared/services/process/process.service';
 import { PopupMenuItem } from '@components/molecules/menu-popup/models/PopupMenuItem.class';
@@ -11,17 +11,20 @@ import { List } from 'immutable';
   styleUrls: ['./workspace-history-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WorkspaceHistoryItemComponent implements IMutableComponent<WorkspaceHistoryItemComponent> {
+export class WorkspaceHistoryItemComponent
+  implements IMutableComponent<WorkspaceHistoryItemComponent>
+{
   @ViewChild('inputEl')
   private readonly _input!: ElementRef<HTMLInputElement>;
 
   private _dataSource: Workspace | undefined;
   private _extraMenuOptions: List<PopupMenuItem>;
   private _isEditing: boolean;
+  private _isMenuShown: boolean;
 
   @Input()
   set dataSource(value: Workspace) {
-    this._dataSource = value;
+    this._dataSource = this._dataSource ?? value;
   }
 
   get dataSource(): Workspace | undefined {
@@ -32,18 +35,33 @@ export class WorkspaceHistoryItemComponent implements IMutableComponent<Workspac
     return this._isEditing;
   }
 
-  readonly itemRemove: EventEmitter<Workspace>;
-  readonly itemRename: EventEmitter<Workspace>;
+  set isMenuShown(value: boolean) {
+    this._isMenuShown = value;
+  }
+
+  get isMenuShown(): boolean {
+    return this._isMenuShown;
+  }
+
+  get menuItems(): List<PopupMenuItem> {
+    return this._extraMenuOptions;
+  }
+
+  @Output()
+  readonly remove: EventEmitter<Workspace>;
+
+  @Output()
+  readonly rename: EventEmitter<Workspace>;
 
   constructor(
     private readonly _CDR: ChangeDetectorRef,
     private readonly _process: ProcessService
   ) {
     this._extraMenuOptions = this._initPopupMenuOptions();
-    this._isEditing = false;
+    this._isEditing = this._isMenuShown = false;
 
-    this.itemRemove = new EventEmitter();
-    this.itemRename = new EventEmitter();
+    this.remove = new EventEmitter();
+    this.rename = new EventEmitter();
   }
 
   setOption(key: keyof WorkspaceHistoryItemComponent, value: WorkspaceHistoryItemComponent[keyof WorkspaceHistoryItemComponent]): void {
@@ -51,6 +69,11 @@ export class WorkspaceHistoryItemComponent implements IMutableComponent<Workspac
       this._isEditing = value as boolean;
     }
 
+    this._CDR.detectChanges();
+  }
+
+  onDropdownTriggerClick(): void {
+    this._isMenuShown = true;
     this._CDR.detectChanges();
   }
 
@@ -68,13 +91,14 @@ export class WorkspaceHistoryItemComponent implements IMutableComponent<Workspac
 
   private _onRenameMenuOptionClick(): void {
     this._isEditing = true;
-    this._input.nativeElement.focus();
+    this._CDR.detectChanges();
 
-    this.itemRename.emit(this._dataSource);
+    this._input.nativeElement.focus();
+    this.rename.emit(this._dataSource);
   }
 
   private _onRemoveOptionClick(): void {
-    
+    this.remove.emit(this._dataSource);
   }
 
   private _initPopupMenuOptions(): List<PopupMenuItem> {

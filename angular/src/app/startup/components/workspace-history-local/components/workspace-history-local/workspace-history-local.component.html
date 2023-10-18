@@ -28,6 +28,6 @@
 
 <app-display-list [dataSource]="workspaces" [itemTemplate]="itemTemplate">
   <ng-template #itemTemplate let-item="item">
-    <app-workspace-history-item [dataSource]="item"></app-workspace-history-item>
+    <app-workspace-history-item [dataSource]="item" (rename)="onWorkspaceItemRename($event)"></app-workspace-history-item>
   </ng-template>
 </app-display-list>

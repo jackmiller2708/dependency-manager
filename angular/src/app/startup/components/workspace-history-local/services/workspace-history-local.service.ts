@@ -1,8 +1,8 @@
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { InterProcessCommunicator } from '@shared/services/IPC/inter-process-communicator.service';
 import { WorkspaceHistoryEndpoint } from '@models/app-endpoints';
 import { IWorkspaceHistory } from '@interfaces/dtos';
 import { WorkspaceHistory } from '@models/WorkspaceHistory.class';
-import { BehaviorSubject, map, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Workspace } from '@models/Workspace.class';
 import { List } from 'immutable';
@@ -21,23 +21,27 @@ export class WorkspaceHistoryService {
     this._IPC
       .invoke<void, string>(WorkspaceHistoryEndpoint.SET_LAST_OPENED)
       .pipe(
-        map((json: string) => JSON.parse(json)),
+        map((json: string): IWorkspaceHistory | undefined => json ? JSON.parse(json) : json),
         map(this._dtoToData)
       )
-      .subscribe((history) => this._history.next(history));
+      .subscribe((history: WorkspaceHistory | undefined): void => this._history.next(history));
   }
 
   loadLocalHistory(): void {
     this._IPC
       .invoke<void, string>(WorkspaceHistoryEndpoint.LOAD)
       .pipe(
-        map((json: string) => JSON.parse(json)),
+        map((json: string): IWorkspaceHistory | undefined => json ? JSON.parse(json) : json),
         map(this._dtoToData)
       )
       .subscribe((history) => this._history.next(history));
   }
 
-  private _dtoToData(dto: IWorkspaceHistory): WorkspaceHistory {
+  private _dtoToData(dto: IWorkspaceHistory | undefined): WorkspaceHistory | undefined {
+    if (!dto) {
+      return dto;
+    }
+
     const { workspaces, lastOpened } = dto;
 
     const workspaceList = List(workspaces.map((workspace) => new Workspace(workspace)));

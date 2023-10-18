@@ -51,22 +51,23 @@ function getRegisteredHandlers(controller: Newable<unknown>): Map<string, AppHan
   return handlers;
 }
 
-function registerAdaptor<P = void, T = unknown>(adaptor: (payload: string) => T | void, handler: (args: P) => T) {
-  return async (args: string): Promise<string | undefined> => {
-    const res = await Promise.resolve(handler(args ? adaptor(args) as any : args));
-
-    return res && typeof res !== "string" ? JSON.stringify(res) : (res as undefined);
-  };
+function registerAdaptor<P = void, T = unknown>(adaptor: (payload: string) => T | void, handler: (args: P) => T): (args: string) => Promise<Awaited<string | undefined>> {
+  return (args: string): Promise<Awaited<string | undefined>> =>
+    Promise.resolve<string | undefined>(
+      handler(args ? (adaptor(args) as any) : args) as any
+    );
 }
 
 function makeHandlerRegistrar(thisArg: IAppController, ipcMain: IpcMain): HandlerRegistrar {
   return <P = void, T = unknown>(endpoint: string, handler: (args: P) => T): void => {
-    ipcMain.handle(
-      endpoint, 
-      async (_: IpcMainInvokeEvent, ..._args: unknown[]): Promise<string | undefined> => {
-        const res = await Promise.resolve(handler.apply(thisArg, _args[0] as [args: P]));
+    const _handlerWrapper = async (_: IpcMainInvokeEvent, ..._args: unknown[]): Promise<string | undefined> => {
+      const res = await Promise.resolve(handler.apply(thisArg, _args[0] as [args: P]));
 
-        return res && typeof res !== "string" ? JSON.stringify(res) : (res as undefined);
-      });
+      return res && typeof res !== "string"
+        ? JSON.stringify(res)
+        : (res as undefined);
+    };
+
+    ipcMain.handle(endpoint, _handlerWrapper);
   };
 }

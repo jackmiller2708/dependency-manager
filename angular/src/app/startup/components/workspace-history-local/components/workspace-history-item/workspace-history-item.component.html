@@ -1,6 +1,6 @@
 <div *ngIf="dataSource" class="flex justify-between border border-slate-500 rounded-md gap-10 py-1 px-2">
   <div class="flex-1">
-    <ng-container *ngIf="!false; else nameInput">
+    <ng-container *ngIf="!isEditing; else nameInput">
       <app-text 
         [content]="dataSource.name" 
         type="paragraph" 
@@ -20,7 +20,9 @@
   </div>
   
   <div class="pt-1">
-    <span class="cursor-pointer" #dropdownTrigger title="more">
+    <span class="cursor-pointer" #dropdownTrigger title="more" (click)="onDropdownTriggerClick()">
       <app-icon path="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"></app-icon>
     </span>
   </div>
+
+  <app-menu-popup [dataSource]="menuItems" [target]="dropdownTrigger" [(isShown)]="isMenuShown"></app-menu-popup>
