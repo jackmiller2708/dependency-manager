@@ -5,6 +5,7 @@
         [content]="dataSource.name" 
         type="paragraph" 
         className="block font-semibold w-max text-lg cursor-pointer" 
+        (onClick)="onWorkspaceNameClick()"
       ></app-text>
     </ng-container>
     <ng-template #nameInput>

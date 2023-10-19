@@ -11,8 +11,10 @@ export class InterProcessCommunicator {
   }
 
   invoke<P = unknown, T = unknown>(channel: string, args?: P): Observable<T> {
+    const params = args ? JSON.stringify(args) : args;
+
     return this._ipcRenderer
-      ? from(this._ipcRenderer.invoke(channel, args))
+      ? from(this._ipcRenderer.invoke(channel, params))
       : EMPTY;
   }
 }

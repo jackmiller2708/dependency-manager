@@ -64,11 +64,10 @@ function registerAdaptor<P = void, T = unknown>(adaptor: (payload: string) => T 
 
 function makeHandlerRegistrar(thisArg: IAppController, ipcMain: IpcMain): HandlerRegistrar {
   return <P = void, T = unknown>(endpoint: string, handler: (args: P) => T): void => {
-    const _handlerWrapper = async (_: IpcMainInvokeEvent, ..._args: unknown[]): Promise<string | undefined> => {
-      return Maybe.lift(await Promise.resolve(handler.call(thisArg, _args[0] as P)))
-        .map((res) => JSON.stringify(res))
+    const _handlerWrapper = async (_: IpcMainInvokeEvent, ..._args: unknown[]): Promise<string | undefined> =>
+      Maybe.lift(await Promise.resolve<T | undefined>(handler.call(thisArg, _args[0] as P)))
+        .map((res: T): string => typeof res === "string" ? res : JSON.stringify(res))
         .unwrap();
-    };
 
     ipcMain.handle(endpoint, _handlerWrapper);
   };

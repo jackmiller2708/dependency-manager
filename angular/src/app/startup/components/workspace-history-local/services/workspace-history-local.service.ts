@@ -17,9 +17,9 @@ export class WorkspaceHistoryService {
     this.history$ = this._history.asObservable();
   }
 
-  openWorkspace(): void {
+  openWorkspace(workspace?: Workspace): void {
     this._IPC
-      .invoke<void, string>(WorkspaceHistoryEndpoint.SET_LAST_OPENED)
+      .invoke<Workspace, string>(WorkspaceHistoryEndpoint.SET_LAST_OPENED, workspace)
       .pipe(
         map((json: string): IWorkspaceHistory | undefined => json ? JSON.parse(json) : json),
         map(this._dtoToData)

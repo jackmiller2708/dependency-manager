@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, ViewChild,   ElementRef, Output } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, ViewChild, ElementRef, Output } from '@angular/core';
 import { IMutableComponent } from '@interfaces/IMutableComponent.interface';
 import { ProcessService } from '@shared/services/process/process.service';
 import { PopupMenuItem } from '@components/molecules/menu-popup/models/PopupMenuItem.class';
@@ -11,9 +11,7 @@ import { List } from 'immutable';
   styleUrls: ['./workspace-history-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WorkspaceHistoryItemComponent
-  implements IMutableComponent<WorkspaceHistoryItemComponent>
-{
+export class WorkspaceHistoryItemComponent implements IMutableComponent<WorkspaceHistoryItemComponent> {
   @ViewChild('inputEl')
   private readonly _input!: ElementRef<HTMLInputElement>;
 
@@ -53,6 +51,9 @@ export class WorkspaceHistoryItemComponent
   @Output()
   readonly rename: EventEmitter<Workspace>;
 
+  @Output()
+  readonly select: EventEmitter<Workspace>;
+
   constructor(
     private readonly _CDR: ChangeDetectorRef,
     private readonly _process: ProcessService
@@ -62,6 +63,7 @@ export class WorkspaceHistoryItemComponent
 
     this.remove = new EventEmitter();
     this.rename = new EventEmitter();
+    this.select = new EventEmitter();
   }
 
   setOption(key: keyof WorkspaceHistoryItemComponent, value: WorkspaceHistoryItemComponent[keyof WorkspaceHistoryItemComponent]): void {
@@ -75,6 +77,10 @@ export class WorkspaceHistoryItemComponent
   onDropdownTriggerClick(): void {
     this._isMenuShown = true;
     this._CDR.detectChanges();
+  }
+
+  onWorkspaceNameClick(): void {
+    this.select.emit(this._dataSource);
   }
 
   private _onShowInExplrOptionClick(): void {

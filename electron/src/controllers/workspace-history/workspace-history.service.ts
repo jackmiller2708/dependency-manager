@@ -83,7 +83,7 @@ class WorkspaceHistoryServiceCore {
     return Either.right<WorkspaceHistory, IWorkspaceHistory>(
       output.chain(this._parseData).fold(
         () => new WorkspaceHistory(),
-        (wh) => wh
+        (wh: IWorkspaceHistory) => wh
       )
     ).chain(this._rawDataMapper);
   }

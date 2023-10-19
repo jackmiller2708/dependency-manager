@@ -19,7 +19,7 @@ export class WorkspaceHistoryLocalComponent implements OnInit, OnDestroy {
   private _isReady: boolean;
 
   @ViewChildren(WorkspaceHistoryItemComponent)
-  private _workspaceItemComponentInstances!: QueryList<WorkspaceHistoryItemComponent>;
+  private _historyItemComponentInstances!: QueryList<WorkspaceHistoryItemComponent>;
 
   @HostBinding('class')
   private get _classes(): string[] {
@@ -49,7 +49,7 @@ export class WorkspaceHistoryLocalComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this._initStores();
-    this._service.loadLocalHistory();
+    this._service.loadLocalHistory(); 
   }
 
   ngOnDestroy(): void {
@@ -60,8 +60,12 @@ export class WorkspaceHistoryLocalComponent implements OnInit, OnDestroy {
     this._service.openWorkspace();
   }
 
+  onWorkspaceItemSelect(workspace: Workspace): void {
+    this._service.openWorkspace(workspace);
+  }
+
   onWorkspaceItemRename(workspace: Workspace): void {
-    this._workspaceItemComponentInstances
+    this._historyItemComponentInstances
       .filter((instance) => instance.dataSource !== workspace)
       .find((instance) => instance.isEditing)
       ?.setOption('isEditing', false);
@@ -70,7 +74,7 @@ export class WorkspaceHistoryLocalComponent implements OnInit, OnDestroy {
   @HostListener("document:keydown", ['$event'])
   private _onDocumentKeydown(event: KeyboardEvent): void {
     if(event.key === "Escape") {
-      this._workspaceItemComponentInstances
+      this._historyItemComponentInstances
         .find((instance) => instance.isEditing)
         ?.setOption('isEditing', false);
     }
