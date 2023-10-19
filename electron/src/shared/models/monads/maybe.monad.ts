@@ -1,7 +1,7 @@
 type MaybeVal<T> = T | undefined | null;
 
 export class Maybe<T> {
-  val: MaybeVal<T>;
+  private val: MaybeVal<T>;
 
   constructor(value: MaybeVal<T>) {
     this.val = value;

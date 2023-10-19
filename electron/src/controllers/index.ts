@@ -52,27 +52,22 @@ function getRegisteredHandlers(controller: Newable<unknown>): Map<string, AppHan
   return handlers;
 }
 
-function registerAdaptor<P = void, T = unknown>(adaptor: (payload: string) => T | void, handler: (args: P) => T): (args: string) => Promise<Awaited<string | undefined>> {
-  return (args: string): Promise<Awaited<string | undefined>> => {
+function registerAdaptor<P = void, T = unknown>(adaptor: (payload: string) => T | void, handler: (args: P) => T): (args: string) => Promise<Awaited<T | undefined>> {
+  return (args: string): Promise<Awaited<T | undefined>> => {
+    const params = Maybe.lift(args)
+      .map((value: string): any => adaptor(value))
+      .unwrap();
 
-    return Promise.resolve<string | undefined>(
-      handler(
-        Maybe.lift(args)
-          .map((value: string): any => adaptor(value))
-          .unwrap()
-      ) as any
-    );
-  }
+    return Promise.resolve<T | undefined>(handler(params) as T);
+  };
 }
 
 function makeHandlerRegistrar(thisArg: IAppController, ipcMain: IpcMain): HandlerRegistrar {
   return <P = void, T = unknown>(endpoint: string, handler: (args: P) => T): void => {
     const _handlerWrapper = async (_: IpcMainInvokeEvent, ..._args: unknown[]): Promise<string | undefined> => {
-      const res = await Promise.resolve(handler.call(thisArg, _args[0] as P));
-
-      return res && typeof res !== "string"
-        ? JSON.stringify(res)
-        : (res as undefined);
+      return Maybe.lift(await Promise.resolve(handler.call(thisArg, _args[0] as P)))
+        .map((res) => JSON.stringify(res))
+        .unwrap();
     };
 
     ipcMain.handle(endpoint, _handlerWrapper);
