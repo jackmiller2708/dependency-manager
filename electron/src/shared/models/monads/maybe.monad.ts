@@ -1,39 +1,33 @@
-type MaybeVal<T> = T | undefined | null;
-
 export class Maybe<T> {
-  private val: MaybeVal<T>;
+  private constructor(private readonly _val: T | undefined | null) {}
 
-  constructor(value: MaybeVal<T>) {
-    this.val = value;
-  }
-
-  static lift<T>(value: MaybeVal<T>) {
+  static lift<T>(value: T | undefined | null) {
     return Maybe.exists(value) ? new Maybe<T>(value) : new Maybe<T>(null);
   }
 
-  static some<R>(value: R) {
+  private static some<R>(value: R) {
     return Maybe.lift<R>(value);
   }
 
-  static none<R>() {
+  private static none<R>() {
     return Maybe.lift<R>(null);
   }
 
-  private static exists<T>(val: T): val is Exclude<T, null | undefined> {
-    return val !== undefined && val !== null;
+  private static exists<T>(value: T): value is Exclude<T, null | undefined> {
+    return value !== undefined && value !== null;
   }
 
-  fMap<R>(fn: (arg: T) => Maybe<R>): Maybe<R> {
-    return Maybe.exists(this.val) ? fn(this.val) : Maybe.none<R>();
+  chain<R>(fn: (arg: T) => Maybe<R>): Maybe<R> {
+    return Maybe.exists(this._val) ? fn(this._val) : Maybe.none<R>();
   }
 
   map<R>(fn: (arg: T) => R): Maybe<R> {
-    return Maybe.exists(this.val)
-      ? Maybe.some<R>(fn(this.val))
+    return Maybe.exists(this._val)
+      ? Maybe.some<R>(fn(this._val))
       : Maybe.none<R>();
   }
 
   unwrap(): T {
-    return this.val as T;
+    return this._val as T;
   }
 }
