@@ -7,6 +7,7 @@ import { getRegisteredControllers } from "@decorators/controller.decorator";
 import { HANDLER_METADATA_KEY } from "@decorators/handler.decorator";
 import { IAppController } from "@interfaces/app-controller.interface";
 import { AppHandler } from "@models/app-handler.model";
+import { Maybe } from "@models/monads/maybe.monad";
 import { Map } from "immutable";
 
 import "reflect-metadata";
@@ -52,16 +53,22 @@ function getRegisteredHandlers(controller: Newable<unknown>): Map<string, AppHan
 }
 
 function registerAdaptor<P = void, T = unknown>(adaptor: (payload: string) => T | void, handler: (args: P) => T): (args: string) => Promise<Awaited<string | undefined>> {
-  return (args: string): Promise<Awaited<string | undefined>> =>
-    Promise.resolve<string | undefined>(
-      handler(args ? (adaptor(args) as any) : args) as any
+  return (args: string): Promise<Awaited<string | undefined>> => {
+
+    return Promise.resolve<string | undefined>(
+      handler(
+        Maybe.lift(args)
+          .map((value: string): any => adaptor(value))
+          .unwrap()
+      ) as any
     );
+  }
 }
 
 function makeHandlerRegistrar(thisArg: IAppController, ipcMain: IpcMain): HandlerRegistrar {
   return <P = void, T = unknown>(endpoint: string, handler: (args: P) => T): void => {
     const _handlerWrapper = async (_: IpcMainInvokeEvent, ..._args: unknown[]): Promise<string | undefined> => {
-      const res = await Promise.resolve(handler.apply(thisArg, _args[0] as [args: P]));
+      const res = await Promise.resolve(handler.call(thisArg, _args[0] as P));
 
       return res && typeof res !== "string"
         ? JSON.stringify(res)
